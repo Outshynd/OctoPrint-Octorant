@@ -1,0 +1,37 @@
+<div class="octorant_category">
+    <!-- User action needed -->    
+    <div class="octorant_message" data-bind="css: {inactive: (events['prusa_user_action_needed'].enabled() == false)}">
+        <h5>
+            <input type="checkbox" class="" data-bind="checked: events['prusa_user_action_needed'].enabled"/>
+            <span>{{ _("User Action Needed") }}</span>
+        </h5>
+        <div data-bind="visible: events['prusa_user_action_needed'].enabled">
+            <div class="control-group">
+                <label class="control-label" for="octorant_message_user_action_needed" >{{ _("Message") }}</label>
+                <div class="controls">
+                    <input type="text" class="input-block-level" id="octorant_message_user_action_needed" data-bind="textInput: events['prusa_user_action_needed'].message"/>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label">{{ _("Repeat delay: ") }}</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input type="number" min="1" step="1" class="input-mini text-right" data-bind="value: prusa_user_action.repeat_delay">
+                        <span class="add-on">seconds</span>
+                    </div>
+                    
+                    <p><small>{{ _("Repeat delay is the amount of time between events being triggered. Without a delay this event will fire very often until user action is taken.") }}</small></p>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="octorant_media_user_action_needed" >{{ _("Include media") }}</label>
+                <div class="controls">
+                    <select id="octorant_media_user_action_needed" data-bind="value: events['prusa_user_action_needed'].media">
+                        <option value="none">{{ _("None") }}</option>
+                        <option value="snapshot">{{ _("Webcam snapshot") }}</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

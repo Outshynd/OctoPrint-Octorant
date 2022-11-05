@@ -116,10 +116,17 @@ EVENTS = {
         "variables": ["gcode","movie","movie_basename","movie_prefix","returncode","out","error","reason"]
     },
 
+    #PRUSA SPECIFIC
+    "prusa_user_action_needed": {
+        "enabled": False,
+        "media": "",
+        "message": "⚠️ User action needed. Possibly a filament change or runout.",
+    },
+
     # Not a real message, but we will treat it as one
     "test":{ 
         "enabled" : True,
-        "media": "snapshot",
+        "media": "",
         "message" : "Hello hello! If you see this message, it means that the settings are correct!"
     },
 }

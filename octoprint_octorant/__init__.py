@@ -64,6 +64,9 @@ class OctorantPlugin(
 			'allow_scripts': False,
 			'script_before': '',
 			'script_after': '',
+			'prusa_user_action': {
+				'repeat_delay': 60
+			},
 			'progress': {
 				'percentage_enabled': True,
 				'percentage_step': 10,
@@ -159,12 +162,12 @@ class OctorantPlugin(
 
 				# version check: github repository
 				type="github_release",
-				user="bchanudet",
+				user="Outshynd",
 				repo="OctoPrint-Octorant",
 				current=self._plugin_version,
 
 				# update method: pip
-				pip="https://github.com/bchanudet/OctoPrint-Octorant/archive/{target_version}.zip"
+				pip="https://github.com/Outshynd/OctoPrint-Octorant/archive/{target_version}.zip"
 			)
 		)
 
@@ -177,12 +180,12 @@ class OctorantPlugin(
 		if "echo:busy: paused for user" in line:
 			if not self.user_action_triggered:
 				self.user_action_triggered = True
+				uan_repeat_delay = self._settings.get_int(['prusa_user_action','repeat_delay'],merged=True)
 
-				self._logger.info("Prusa filament change or runout detected")
-
-				if datetime.timedelta.total_seconds(datetime.datetime.now() - self.last_user_action_notification) > 60: #change '60' to change time between notifications
+				if datetime.timedelta.total_seconds(datetime.datetime.now() - self.last_user_action_notification) > uan_repeat_delay: #change '60' to change time between notifications
+					self._logger.info("Prusa filament change or runout detected")
 					self.last_user_action_notification = datetime.datetime.now()
-					self.notify_event("printing_paused")
+					self.notify_event("prusa_user_action_needed")
 		
 		else:
 			self.user_action_triggered = False

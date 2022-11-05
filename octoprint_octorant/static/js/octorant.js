@@ -11,10 +11,12 @@ $(function() {
 
         self.events = null;
         self.progress = null;
+        self.prusa_user_action = null;
 
         self.onBeforeBinding = () => {
             self.events = self.settings.settings.plugins.octorant.events;
             self.progress = self.settings.settings.plugins.octorant.progress;
+            self.prusa_user_action = self.settings.settings.plugins.octorant.prusa_user_action;
 
             console.log(self);
         }

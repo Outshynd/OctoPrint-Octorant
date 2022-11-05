@@ -174,12 +174,10 @@ class OctorantPlugin(
 	
 	#start parse gcode - borrowed from OctoPrint-Webhooks plugin
 	def recv_callback(self, comm_instance, line, *args, **kwargs):
-
 		if "echo:busy: paused for user" in line:
-
 			if not self.user_action_triggered:
 				self.user_action_triggered = True
-				
+
 				self._logger.info("Prusa filament change or runout detected")
 
 				if datetime.timedelta.total_seconds(datetime.datetime.now() - self.last_user_action_notification) > 60: #change '60' to change time between notifications

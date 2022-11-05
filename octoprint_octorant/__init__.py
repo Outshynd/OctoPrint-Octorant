@@ -27,6 +27,9 @@ class OctorantPlugin(
 	def __init__(self):
 		self.events = EVENTS
 		self.uploading = False
+
+		self.last_user_action_notification = datetime.datetime.now() - datetime.timedelta(seconds=60)
+		self.user_action_triggered = False
 		
 		# progress specific variables
 		self.progressTimer = None
@@ -168,6 +171,22 @@ class OctorantPlugin(
 	def register_custom_events(*args, **kwargs):
 		return ["before_notify", "after_notify"]
 
+	
+	#start parse gcode - borrowed from OctoPrint-Webhooks plugin
+	def recv_callback(self, comm_instance, line, *args, **kwargs):
+		if "echo:busy: paused for user" in line:
+			if not self.user_action_triggered:
+				self.user_action_triggered = True
+
+				if datetime.timedelta.total_seconds(datetime.datetime.now() - self.last_user_action_notification) > 60: #change '60' to change time between notifications
+					self.last_user_action_notification = datetime.datetime.now()
+					self.notify_event("printing_paused")
+		
+		else:
+			self.user_action_triggered = False
+		
+		return line
+	#end parse gcode
 
 	##~~ EventHandlerPlugin hook
 	def on_event(self, event: str, payload):
@@ -452,6 +471,7 @@ def __plugin_load__():
 	global __plugin_hooks__
 	__plugin_hooks__ = {
 		"octoprint.plugin.softwareupdate.check_config": __plugin_implementation__.get_update_information,
-		"octoprint.events.register_custom_events": __plugin_implementation__.register_custom_events
+		"octoprint.events.register_custom_events": __plugin_implementation__.register_custom_events,
+		"octoprint.comm/protocol.gcode.received": __plugin_implementation__.recv_callback
 	}
 
